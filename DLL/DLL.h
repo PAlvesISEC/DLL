@@ -12,6 +12,16 @@
 //Definir uma constante para facilitar a leitura do protótipo da função
 //Este .h deve ser incluído no projeto que o vai usar (modo implícito)
 #define TAM 256
+// VINDO DO (.h) DO SERVIDOR 
+#define SIZE_USERNAME		30									// Max chars do utilizador
+#define TAM_BUFFER			20									// Tamanho de Buffer a utilizar no CLiente
+#define MAXCLIENTES			4									// Maximo de Clientes 
+#define MAXJOGADORES		4									// Max jogadores permitido
+#define NUMTIPOOBJECTOS		10									// Tipo de objectos existentes
+#define MAX_LINHAS			40									// Limite maximo de Linhas
+#define MAX_COLUNAS			80
+#define MIN_LINHAS			10
+#define MIN_COLUNAS			10
 
 //Esta macro é definida pelo sistema caso estejamos na DLL (<DLL_IMP>_EXPORTS definida)
 //ou na app (<DLL_IMP>_EXPORTS não definida) onde DLL_IMP é o nome deste projeto
@@ -30,6 +40,10 @@
 //{
 	//Variável global da DLL
 	extern DLL_IMP_API int nDLL;
+	extern DLL_IMP_API HANDLE hMemoria;
+	extern DLL_IMP_API HANDLE hSemMemoria;
+	extern DLL_IMP_API HANDLE hEventoMemoria;
+	extern DLL_IMP_API HANDLE hFicheiro;
 
 	extern DLL_IMP_API char ponteiro[40960];
 
