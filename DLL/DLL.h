@@ -8,20 +8,10 @@
 
 #include <windows.h>
 #include <tchar.h>
+#include "../../SnakeServer/SnakeServer/TiposConstantes.h"
 
 //Definir uma constante para facilitar a leitura do protótipo da função
 //Este .h deve ser incluído no projeto que o vai usar (modo implícito)
-#define TAM 256
-// VINDO DO (.h) DO SERVIDOR 
-#define SIZE_USERNAME		30									// Max chars do utilizador
-#define TAM_BUFFER			20									// Tamanho de Buffer a utilizar no CLiente
-#define MAXCLIENTES			4									// Maximo de Clientes 
-#define MAXJOGADORES		4									// Max jogadores permitido
-#define NUMTIPOOBJECTOS		10									// Tipo de objectos existentes
-#define MAX_LINHAS			40									// Limite maximo de Linhas
-#define MAX_COLUNAS			80
-#define MIN_LINHAS			10
-#define MIN_COLUNAS			10
 
 //Esta macro é definida pelo sistema caso estejamos na DLL (<DLL_IMP>_EXPORTS definida)
 //ou na app (<DLL_IMP>_EXPORTS não definida) onde DLL_IMP é o nome deste projeto
@@ -36,17 +26,20 @@
 #define DLL_IMP_API __declspec(dllimport)   // Se estiver na DLL faz o de sima, se não estiver faz este
 #endif
 
-//extern "C"   // Comentar para poder ser um ficheiro (.c) se não comentar tera de ser (.cpp)
-//{
-	//Variável global da DLL
-	extern DLL_IMP_API int nDLL;
-	extern DLL_IMP_API HANDLE hMemoria;
-	extern DLL_IMP_API HANDLE hSemMemoria;
-	extern DLL_IMP_API HANDLE hEventoMemoria;
-	extern DLL_IMP_API HANDLE hFicheiro;
+//Variável global da DLL
+extern DLL_IMP_API HANDLE hMemoria;
+extern DLL_IMP_API HANDLE hSemMemoria;
+extern DLL_IMP_API HANDLE hEventoMemoria;
+extern DLL_IMP_API HANDLE hFicheiro;
+extern DLL_IMP_API MemGeral *vistaPartilhaGeral;
 
-	extern DLL_IMP_API char ponteiro[40960];
+//Funções a serem exportadas/importadas
+DLL_IMP_API void preparaMemoriaPartilhada(void);
+DLL_IMP_API void preparaMapaJogo(MemGeral param);
+DLL_IMP_API void inicializaMemoriaPartilhada(void);
+DLL_IMP_API void esperaPorActualizacao(void);
+DLL_IMP_API void leMemoriaPartilhada(MemGeral* param);
+DLL_IMP_API void fechaMemoriaPartilhada(void);
+DLL_IMP_API int Cria_Jogo(MemGeral param, int numJogadores);
+DLL_IMP_API void getMapa(MemGeral *param);
 
-	//Funções a serem exportadas/importadas
-	DLL_IMP_API int UmaString(void);
-//}

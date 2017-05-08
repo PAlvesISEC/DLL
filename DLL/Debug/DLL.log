@@ -1,4 +1,4 @@
 ﻿  DLL.c
-     Creating library C:\Users\Paulo\Desktop\SnakeServer\DLL\DLL\Debug\DLL.lib and object C:\Users\Paulo\Desktop\SnakeServer\DLL\DLL\Debug\DLL.exp
-  DLL.vcxproj -> C:\Users\Paulo\Desktop\SnakeServer\DLL\DLL\Debug\DLL.dll
-  DLL.vcxproj -> C:\Users\Paulo\Desktop\SnakeServer\DLL\DLL\Debug\DLL.pdb (Full PDB)
+c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(25): warning C4098: 'preparaMemoriaPartilhada': 'void' function returning a value
+  DLL.vcxproj -> C:\Users\Jotta\Documents\Visual Studio 2015\Projects\DLL\Debug\DLL.dll
+  DLL.vcxproj -> C:\Users\Jotta\Documents\Visual Studio 2015\Projects\DLL\Debug\DLL.pdb (Full PDB)
