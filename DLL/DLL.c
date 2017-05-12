@@ -88,14 +88,14 @@ void getMapa(MemGeral *param) {
 }
 
 int Cria_Jogo(MemGeral param, int numJogadores) {
-	WaitForSingleObject(hSemMemoria, INFINITE);
-	if (!(vistaPartilhaGeral->estadoJogo == CRIACAOJOGO)) {
-		return 0;
-	}
 	for (int i = 0; i < MAXCLIENTES - 1; i++) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
-
+	if ((vistaPartilhaGeral->estadoJogo != CRIACAOJOGO)) {
+		ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
+		return 0;
+	}
+	
 	vistaPartilhaGeral->estadoJogo = ASSOCIACAOJOGO;
 	vistaPartilhaGeral->config = param.config;
 	vistaPartilhaGeral->mensagem.codigoMsg = param.mensagem.codigoMsg;
