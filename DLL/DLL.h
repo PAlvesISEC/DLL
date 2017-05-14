@@ -8,7 +8,7 @@
 
 #include <windows.h>
 #include <tchar.h>
-#include "../../SnakeServer/SnakeServer/TiposConstantes.h"
+#include "TiposConstantes.h"
 
 //Definir uma constante para facilitar a leitura do protótipo da função
 //Este .h deve ser incluído no projeto que o vai usar (modo implícito)
@@ -34,7 +34,7 @@ extern DLL_IMP_API HANDLE hFicheiro;
 extern DLL_IMP_API MemGeral *vistaPartilhaGeral;
 
 //Funções a serem exportadas/importadas
-DLL_IMP_API void preparaMemoriaPartilhada(void);
+DLL_IMP_API int preparaMemoriaPartilhada(void);
 DLL_IMP_API void preparaMapaJogo(MemGeral param);
 DLL_IMP_API void inicializaMemoriaPartilhada(void);
 DLL_IMP_API void esperaPorActualizacao(void);
@@ -42,4 +42,8 @@ DLL_IMP_API void leMemoriaPartilhada(MemGeral* param);
 DLL_IMP_API void fechaMemoriaPartilhada(void);
 DLL_IMP_API int Cria_Jogo(MemGeral param, int numJogadores);
 DLL_IMP_API void getMapa(MemGeral *param);
+DLL_IMP_API void mudaDirecao(int direcao);
+DLL_IMP_API int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username2[SIZE_USERNAME]);
+DLL_IMP_API int IniciaJogo(TCHAR username[SIZE_USERNAME]);
+DLL_IMP_API void mudaDirecao(int direcao);
 

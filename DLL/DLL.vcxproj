@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DLL.h" />
+    <ClInclude Include="TiposConstantes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DLL.c" />

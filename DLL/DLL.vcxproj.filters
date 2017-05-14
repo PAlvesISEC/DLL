@@ -18,6 +18,9 @@
     <ClInclude Include="DLL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TiposConstantes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DLL.c">

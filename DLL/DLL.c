@@ -9,7 +9,9 @@ HANDLE hEventoMemoria;
 HANDLE hFicheiro;
 MemGeral *vistaPartilhaGeral;
 
-void preparaMemoriaPartilhada(void) {
+void criaCobra(TCHAR username[SIZE_USERNAME], int vaga);
+
+int preparaMemoriaPartilhada(void) {
 
 	hFicheiro = CreateFile(FILE_MAP_NAME, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -28,7 +30,7 @@ void preparaMemoriaPartilhada(void) {
 
 void preparaMapaJogo(MemGeral param) {
 
-	for (int i = 0; i < MAXCLIENTES - 1; i++) {
+	for (int i = 0; i < MAXCLIENTES; i++) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
 
@@ -88,7 +90,7 @@ void getMapa(MemGeral *param) {
 }
 
 int Cria_Jogo(MemGeral param, int numJogadores) {
-	for (int i = 0; i < MAXCLIENTES - 1; i++) {
+	for (int i = 0; i < MAXCLIENTES; i++) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
 	if ((vistaPartilhaGeral->estadoJogo != CRIACAOJOGO)) {
@@ -101,10 +103,113 @@ int Cria_Jogo(MemGeral param, int numJogadores) {
 	vistaPartilhaGeral->mensagem.codigoMsg = param.mensagem.codigoMsg;
 	_tcscpy_s(vistaPartilhaGeral->mensagem.username, SIZE_USERNAME, param.mensagem.username);
 	_tcscpy_s(vistaPartilhaGeral->criador, SIZE_USERNAME, param.criador);
-	vistaPartilhaGeral->vagasJogadores = param.config.N;
+	vistaPartilhaGeral->vagasJogadores = 0;
 
 	SetEvent(hEventoMemoria);
 	ResetEvent(hEventoMemoria);
 	ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
 	return 1;
+}
+
+int IniciaJogo(TCHAR username[SIZE_USERNAME]) {
+	for (int i = 0; i < MAXCLIENTES; i++) {
+		WaitForSingleObject(hSemMemoria, INFINITE);
+	}
+
+	vistaPartilhaGeral->mensagem.codigoMsg = INICIARJOGO;
+	_tcscpy_s(vistaPartilhaGeral->mensagem.username, SIZE_USERNAME, username);
+
+	SetEvent(hEventoMemoria);
+	ResetEvent(hEventoMemoria);
+	ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
+	return 1;
+}
+
+
+int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username2[SIZE_USERNAME]) {
+	for (int i = 0; i < MAXCLIENTES; i++) {
+		WaitForSingleObject(hSemMemoria, INFINITE);
+	}
+	if ((vistaPartilhaGeral->estadoJogo != ASSOCIACAOJOGO) && ((vistaPartilhaGeral->config.N - vistaPartilhaGeral->vagasJogadores) < numJogadores)) {
+		ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
+		return 0;
+	}
+
+	if (numJogadores == 1) {
+		srand((int)time(NULL));
+		criaCobra(username1, vistaPartilhaGeral->vagasJogadores);
+		vistaPartilhaGeral->vagasJogadores++;
+	}
+	else {
+		criaCobra(username1, vistaPartilhaGeral->vagasJogadores);
+		vistaPartilhaGeral->vagasJogadores++;
+		criaCobra(username2, vistaPartilhaGeral->vagasJogadores);
+		vistaPartilhaGeral->vagasJogadores++;
+	}
+
+	SetEvent(hEventoMemoria);
+	ResetEvent(hEventoMemoria);
+	ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
+	return 1;
+}
+
+void mudaDirecao(int direcao) {
+	for (int i = 0; i < MAXCLIENTES; i++) {
+		WaitForSingleObject(hSemMemoria, INFINITE);
+	}
+
+	//Hardcoded a posicao do array mas tem de ser mudado este aspecto
+	vistaPartilhaGeral->jogadores[0].direcao = direcao;
+
+	SetEvent(hEventoMemoria);
+	ResetEvent(hEventoMemoria);
+	ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
+	return 1;
+}
+
+//Gera as posições da cobra no mapa verificando se há colisões com paredes e fazendo a respectiva alteração á cobra
+void criaCobra(TCHAR username[SIZE_USERNAME], int vaga) {
+	int posXGerada, posYGerada, dirGerada;
+	//Gera posições até encontrar uma vaga;
+	while (1) {
+		posXGerada = random_at_most((long)vistaPartilhaGeral->config.C);
+		posYGerada = random_at_most((long)vistaPartilhaGeral->config.L);
+		if (vistaPartilhaGeral->mapa[posYGerada][posXGerada] == ' ')
+			break;
+	}
+
+	//Na posição 0 do array de posições ficam as Linhas e na 1 ficam as Colunas
+	vistaPartilhaGeral->jogadores[vaga].posicoesCobra[0][0] = posYGerada;
+	vistaPartilhaGeral->jogadores[vaga].posicoesCobra[0][1] = posXGerada;
+	vistaPartilhaGeral->mapa[posYGerada][posXGerada] = vaga + '0';
+
+	dirGerada = random_at_most(3) + 1;
+	vistaPartilhaGeral->jogadores[vaga].direcao = dirGerada;
+
+	vistaPartilhaGeral->jogadores[vaga].porAparecer = vistaPartilhaGeral->config.T - 1;
+	vistaPartilhaGeral->jogadores[vaga].estadoJogador = VIVO;
+	vistaPartilhaGeral->jogadores[vaga].pontuacao = 0;
+	vistaPartilhaGeral->jogadores[vaga].tamanho = vistaPartilhaGeral->config.T;
+	_tcscpy_s(vistaPartilhaGeral->jogadores[vaga].username, SIZE_USERNAME, username);
+}
+
+// Assumes 0 <= max <= RAND_MAX
+// Returns in the closed interval [0, max]
+long random_at_most(long max) {
+	unsigned long
+		// max <= RAND_MAX < ULONG_MAX, so this is okay.
+		num_bins = (unsigned long)max + 1,
+		num_rand = (unsigned long)RAND_MAX + 1,
+		bin_size = num_rand / num_bins,
+		defect = num_rand % num_bins;
+
+	long x;
+	do {
+		x = rand();
+	}
+	// This is carefully written not to overflow
+	while (num_rand - defect <= (unsigned long)x);
+
+	// Truncated division is intentional
+	return x / bin_size;
 }

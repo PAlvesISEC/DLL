@@ -1,4 +1,9 @@
 ﻿  DLL.c
-c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(25): warning C4098: 'preparaMemoriaPartilhada': 'void' function returning a value
+c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(139): warning C4013: 'time' undefined; assuming extern returning int
+c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(167): warning C4098: 'mudaDirecao': 'void' function returning a value
+c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(175): warning C4013: 'random_at_most' undefined; assuming extern returning int
+c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(198): warning C4142: 'random_at_most': benign redefinition of type
+c:\users\jotta\documents\visual studio 2015\projects\dll\dll\dll.c(29): warning C4715: 'preparaMemoriaPartilhada': not all control paths return a value
+     Creating library C:\Users\Jotta\Documents\Visual Studio 2015\Projects\DLL\Debug\DLL.lib and object C:\Users\Jotta\Documents\Visual Studio 2015\Projects\DLL\Debug\DLL.exp
   DLL.vcxproj -> C:\Users\Jotta\Documents\Visual Studio 2015\Projects\DLL\Debug\DLL.dll
   DLL.vcxproj -> C:\Users\Jotta\Documents\Visual Studio 2015\Projects\DLL\Debug\DLL.pdb (Full PDB)
