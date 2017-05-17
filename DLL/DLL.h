@@ -40,10 +40,9 @@ DLL_IMP_API void inicializaMemoriaPartilhada(void);
 DLL_IMP_API void esperaPorActualizacao(void);
 DLL_IMP_API void leMemoriaPartilhada(MemGeral* param);
 DLL_IMP_API void fechaMemoriaPartilhada(void);
-DLL_IMP_API int Cria_Jogo(MemGeral param, int numJogadores);
+DLL_IMP_API int Cria_Jogo(ConfigInicial param, TCHAR username1[SIZE_USERNAME]);
 DLL_IMP_API void getMapa(MemGeral *param);
-DLL_IMP_API void mudaDirecao(int direcao);
-DLL_IMP_API int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username2[SIZE_USERNAME]);
+DLL_IMP_API void mudaDirecao(int direcao, int indice);
+DLL_IMP_API int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username2[SIZE_USERNAME], int *indice);
 DLL_IMP_API int IniciaJogo(TCHAR username[SIZE_USERNAME]);
-DLL_IMP_API void mudaDirecao(int direcao);
 

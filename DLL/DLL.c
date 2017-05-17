@@ -22,6 +22,8 @@ int preparaMemoriaPartilhada(void) {
 	hEventoMemoria = CreateEvent(NULL, TRUE, FALSE, EVNT_MEM_GERAL);
 	hSemMemoria = CreateSemaphore(NULL, MAXCLIENTES, MAXCLIENTES, SEM_MEM_GERAL);
 
+	srand((int)time(NULL));
+
 	if (hMemoria == NULL || hEventoMemoria == NULL || hSemMemoria == NULL) {
 		_tprintf(TEXT("[Erro] Criação de objectos do Windows(%d)\n"), GetLastError());
 		return -1;
@@ -89,7 +91,7 @@ void getMapa(MemGeral *param) {
 	ReleaseSemaphore(hSemMemoria, 1, NULL);
 }
 
-int Cria_Jogo(MemGeral param, int numJogadores) {
+int Cria_Jogo(ConfigInicial param,TCHAR username1[SIZE_USERNAME]) {
 	for (int i = 0; i < MAXCLIENTES; i++) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
@@ -99,10 +101,10 @@ int Cria_Jogo(MemGeral param, int numJogadores) {
 	}
 	
 	vistaPartilhaGeral->estadoJogo = ASSOCIACAOJOGO;
-	vistaPartilhaGeral->config = param.config;
-	vistaPartilhaGeral->mensagem.codigoMsg = param.mensagem.codigoMsg;
-	_tcscpy_s(vistaPartilhaGeral->mensagem.username, SIZE_USERNAME, param.mensagem.username);
-	_tcscpy_s(vistaPartilhaGeral->criador, SIZE_USERNAME, param.criador);
+	vistaPartilhaGeral->config = param;
+	vistaPartilhaGeral->mensagem.codigoMsg = CRIARJOGO;
+	_tcscpy_s(vistaPartilhaGeral->mensagem.username, SIZE_USERNAME, username1);
+	_tcscpy_s(vistaPartilhaGeral->criador, SIZE_USERNAME, username1);
 	vistaPartilhaGeral->vagasJogadores = 0;
 
 	SetEvent(hEventoMemoria);
@@ -116,6 +118,11 @@ int IniciaJogo(TCHAR username[SIZE_USERNAME]) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
 
+	//Se não for o user que criou o jogo não pode dar inicio a este
+	if (!(_tcscmp(username, vistaPartilhaGeral->criador)==0)) {
+		ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
+		return 0;
+	}
 	vistaPartilhaGeral->mensagem.codigoMsg = INICIARJOGO;
 	_tcscpy_s(vistaPartilhaGeral->mensagem.username, SIZE_USERNAME, username);
 
@@ -126,17 +133,18 @@ int IniciaJogo(TCHAR username[SIZE_USERNAME]) {
 }
 
 
-int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username2[SIZE_USERNAME]) {
+int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username2[SIZE_USERNAME], int *indice) {
 	for (int i = 0; i < MAXCLIENTES; i++) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
+	//Se não existir jogo criado e as vagas existentes não forem suficientes para os jogadores que se pretendem juntar ao jogo
 	if ((vistaPartilhaGeral->estadoJogo != ASSOCIACAOJOGO) && ((vistaPartilhaGeral->config.N - vistaPartilhaGeral->vagasJogadores) < numJogadores)) {
 		ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
 		return 0;
 	}
+	*indice = vistaPartilhaGeral->vagasJogadores;
 
 	if (numJogadores == 1) {
-		srand((int)time(NULL));
 		criaCobra(username1, vistaPartilhaGeral->vagasJogadores);
 		vistaPartilhaGeral->vagasJogadores++;
 	}
@@ -153,16 +161,14 @@ int AssociaJogo(int numJogadores, TCHAR username1[SIZE_USERNAME], TCHAR username
 	return 1;
 }
 
-void mudaDirecao(int direcao) {
+void mudaDirecao(int direcao, int indice) {
 	for (int i = 0; i < MAXCLIENTES; i++) {
 		WaitForSingleObject(hSemMemoria, INFINITE);
 	}
 
 	//Hardcoded a posicao do array mas tem de ser mudado este aspecto
-	vistaPartilhaGeral->jogadores[0].direcao = direcao;
+	vistaPartilhaGeral->jogadores[indice].direcao = direcao;
 
-	SetEvent(hEventoMemoria);
-	ResetEvent(hEventoMemoria);
 	ReleaseSemaphore(hSemMemoria, MAXCLIENTES, NULL);
 	return 1;
 }
